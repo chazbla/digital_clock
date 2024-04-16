@@ -1,0 +1,36 @@
+import tkinter as tk
+from tkinter import Label
+from datetime import datetime
+import pytz
+
+root = tk.Tk()
+root.title("Wilson Tools Clocks")
+
+def update_time(label, timezone):
+    current_time = datetime.now(pytz.timezone(timezone)).strftime("%H:%M:%S %p")
+    label.config(text=current_time)
+    label.after(1000, update_time, label, timezone)
+
+    current_time_dt = datetime.strptime(current_time, "%H:%M:%S %p")
+    current_hour = current_time_dt.hour
+
+    is_night = 20 <= current_hour <=6
+
+    background_color = 'dark blue' if is_night else 'skyblue'
+    label.config(bg = background_color)
+
+timezones = {
+    'UK - Swindon': 'Europe/London',
+    'USA -White Bear': 'US/Central',
+    'Mainland Europe': 'Europe/Copenhagen'
+}
+for idx, (city, timezone) in enumerate(timezones.items()):
+    label = Label(root, font=('Arial', 75,'bold'), foreground = 'black')
+    label.pack(pady=20)
+    label.config(text=city)
+    root.geometry("1920x1080")
+
+    clock_label = Label(root, font=("Arial", 75, 'bold'), foreground = 'white')
+    clock_label.pack(pady=20)
+
+    update_time(clock_label, timezone) 
